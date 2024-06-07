@@ -1,81 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Polinômios</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Derivadas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Calculadora de Polinômios</h1>
-    <form onsubmit="event.preventDefault(); calcular();">
-      <div class="form-group">
-        <label for="polinomio">Digite o polinômio:</label>
-        <input type="text" class="form-control" id="polinomio" placeholder="Ex: 3x^2 + 2x - 5" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Calcular</button>
-    </form>
-    <div id="output"></div>
-    
-    <!-- Adicione este select para visualizar polinômios registrados -->
-    <div class="form-group">
-      <label for="selectPolinomios">Polinômios Registrados:</label>
-      <select id="selectPolinomios" class="form-control"></select>
-    </div>
-    
-    <canvas id="graphCanvas" style="height: 400px; width: 100%;"></canvas>
-    
-    <!-- Modais para valor funcional e equação da reta tangente -->
-    <div class="modal fade" id="modalValorFuncional" tabindex="-1" role="dialog" aria-labelledby="modalValorFuncionalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalValorFuncionalLabel">Calcular Valor Funcional</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form onsubmit="event.preventDefault(); calcularValorFuncionalEExibir();">
-              <div class="form-group">
-                <label for="valorA">Digite o valor de x:</label>
-                <input type="number" class="form-control" id="valorA" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Calcular</button>
-            </form>
-          </div>
+    <div class="container mt-5">
+        <h1 class="text-center">Calculadora de Derivadas</h1>
+        <div class="form-group">
+            <label for="polynomial">Digite a função polinomial em x:</label>
+            <input type="text" class="form-control" id="polynomial" placeholder="Ex: 3x^3 + 2x^2 + x + 5">
         </div>
-      </div>
+        <button class="btn btn-primary" onclick="calculateDerivative()">Calcular Derivada</button>
+        <div id="result" class="mt-4"></div>
     </div>
 
-    <div class="modal fade" id="modalEquacaoTangente" tabindex="-1" role="dialog" aria-labelledby="modalEquacaoTangenteLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalEquacaoTangenteLabel">Calcular Equação da Reta Tangente</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form onsubmit="event.preventDefault(); calcularEquacaoTangenteEExibir();">
-              <div class="form-group">
-                <label for="valorTangenteA">Digite o valor de x:</label>
-                <input type="number" class="form-control" id="valorTangenteA" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Calcular</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
