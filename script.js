@@ -1,74 +1,59 @@
-/*
- * Este script realiza várias operações matemáticas relacionadas a polinômios, incluindo derivadas, cálculo de valores funcionais,
- * e a exibição da equação da reta tangente. Abaixo está a ordem das operações e a função de cada parte do código:
- *
- * 1. Declarar uma variável global para armazenar polinômios registrados.
- * 2. Definir a função `parsePolinomio` para converter uma string de polinômio em um array de termos.
- * 3. Definir a função `derivada` para calcular a derivada de um array de termos.
- * 4. Definir a função `stringificarPolinomio` para converter um array de termos em uma string de polinômio.
- * 5. Definir a função `calcularValorFuncional` para calcular o valor funcional de um polinômio em um ponto.
- * 6. Definir a função `calcular` para processar a entrada do polinômio, calcular a derivada e exibir os resultados.
- * 7. Definir a função `calcularValorFuncionalEExibir` para calcular e exibir o valor funcional e a derivada em um ponto.
- * 8. Definir a função `calcularEquacaoTangenteEExibir` para calcular e exibir a equação da reta tangente.
- * 9. Definir a função `simplificarEquacaoTangente` para simplificar a equação da reta tangente.
- * 10. Definir a função `plotarGrafico` para plotar o gráfico do polinômio, sua derivada e a reta tangente.
- * 11. Definir a função `atualizarSelectPolinomios` para atualizar o select com polinômios registrados.
- * 12. Definir a função `selecionarPolinomioRegistrado` para preencher o campo de entrada com um polinômio registrado.
- */
-
 // 1. Declaração de uma variável global para armazenar polinômios registrados
 let polinomiosRegistrados = [];
 
 // 2. Função para converter uma string de polinômio em um array de termos
 function parsePolinomio(polinomio) {
-    const termos = polinomio.match(/([+-]?\s*\d*x\^?\d*|[+-]?\s*\d*x|[+-]?\s*\d+)/g);
-    return termos.map(termo => {
-      const [_, coeficiente, expoente] = termo.match(/([+-]?\s*\d*)x\^?(\d*)/) || [termo, termo, '0'];
-      return {
-        coeficiente: coeficiente.replace(/\s/g, '') || (termo.includes('x') ? '1' : '0'),
-        expoente: expoente.replace(/\s/g, '') || (termo.includes('x') ? '1' : '0')
-      };
-    });
-  }  
-  
+  const termos = polinomio.match(/([+-]?\s*\d*x(?:\^\d+|²)?|[+-]?\s*\d*x|[+-]?\s*\d+)/g);
+
+  return termos.map(termo => {
+    const match = termo.match(/([+-]?\s*\d*)x(?:\^(\d+)|²)?/);
+
+    let coeficiente, expoente;
+
+    if (match) {
+      coeficiente = match[1].replace(/\s/g, '') || '1';
+      if (coeficiente === '+' || coeficiente === '-') {
+        coeficiente += '1';
+      }
+      expoente = match[2] ? match[2].replace(/\s/g, '') : '2';
+    } else {
+      coeficiente = termo.replace(/\s/g, '');
+      expoente = '0';
+    }
+
+    return {
+      coeficiente: parseFloat(coeficiente),
+      expoente: parseInt(expoente)
+    };
+  });
+}
+
 // 3. Função para calcular a derivada de um array de termos
 function derivada(termos) {
-    return termos.map(termo => {
-      if (termo.expoente === '0') return null;
-      let coeficiente = parseFloat(termo.coeficiente);
-      let expoente = parseFloat(termo.expoente);
-  
-      // Verifica se o expoente é -1 ou 1
-      if (expoente === -1) {
-        coeficiente = -1;
-        expoente = 1;
-      } else if (expoente === 1) {
-        coeficiente = 1;
-        expoente = 1;
-      } else {
-        coeficiente = coeficiente * expoente;
-        expoente = expoente - 1;
-      }
-  
-      return { coeficiente: coeficiente.toString(), expoente: expoente.toString() };
-    }).filter(termo => termo !== null);
-  }
-  
-  
+  return termos.map(termo => {
+    if (termo.expoente === 0) return null;
+    let coeficiente = termo.coeficiente;
+    let expoente = termo.expoente;
+    coeficiente = coeficiente * expoente;
+    expoente = expoente - 1;
+
+    return { coeficiente: coeficiente, expoente: expoente };
+  }).filter(termo => termo !== null);
+}
 
 // 4. Função para converter um array de termos em uma string de polinômio
 function stringificarPolinomio(termos) {
   return termos.map(termo => {
-    const coeficiente = termo.coeficiente === '1' ? '' : termo.coeficiente === '-1' ? '-' : termo.coeficiente;
-    if (termo.expoente === '0') return coeficiente;
-    if (termo.expoente === '1') return coeficiente + '1';
-    return coeficiente + 'x^' + termo.expoente;
+    const coeficienteString = termo.coeficiente === 1 ? '' : termo.coeficiente === -1 ? '-' : termo.coeficiente;
+    if (termo.expoente === 0) return coeficienteString;
+    if (termo.expoente === 1) return coeficienteString + 'x';
+    return coeficienteString + 'x^' + termo.expoente;
   }).join(' ').replace(/\s+/g, ' ').trim();
 }
 
 // 5. Função para calcular o valor funcional de um polinômio em um ponto
 function calcularValorFuncional(termos, a) {
-  return termos.reduce((soma, termo) => soma + parseFloat(termo.coeficiente) * Math.pow(a, parseFloat(termo.expoente)), 0);
+  return termos.reduce((soma, termo) => soma + termo.coeficiente * Math.pow(a, termo.expoente), 0);
 }
 
 // 6. Função para processar a entrada do polinômio, calcular a derivada e exibir os resultados
@@ -78,7 +63,6 @@ function calcular() {
   const polinomioDerivado = derivada(polinomioParseado);
 
   const f_x = `f(x) = ${polinomio}`;
-
   const f_linha_x = `f'(x) = ${stringificarPolinomio(polinomioDerivado)}`;
 
   const output = document.getElementById('output');
@@ -94,13 +78,11 @@ function calcular() {
   `;
   polinomiosRegistrados.push(polinomio);
   atualizarSelectPolinomios();
-
-  $('#modalValorFuncional').modal('show');
 }
 
 // 7. Função para calcular e exibir o valor funcional e a derivada em um ponto
 function calcularValorFuncionalEExibir() {
-  const a = document.getElementById('valorA').value;
+  const a = parseFloat(document.getElementById('valorA').value);
   const polinomio = document.getElementById('polinomio').value;
   const polinomioParseado = parsePolinomio(polinomio);
   const polinomioDerivado = derivada(polinomioParseado);
@@ -122,17 +104,10 @@ function calcularValorFuncionalEExibir() {
   $('#modalValorFuncional').modal('hide');
   $('#modalEquacaoTangente').modal('show');
 }
-function abrirModal(){
-    $('#modalEquacaoTangente').modal('show');
-}
-function limparinput(){
-    document.getElementById('polinomio').value = '';
-    document.getElementById('valorA').value = '';
-    document.getElementById('valorTangenteA').value = '';
-}
+
 // 8. Função para calcular e exibir a equação da reta tangente
 function calcularEquacaoTangenteEExibir() {
-  const a = document.getElementById('valorTangenteA').value;
+  const a = parseFloat(document.getElementById('valorTangenteA').value);
   const polinomio = document.getElementById('polinomio').value;
   const polinomioParseado = parsePolinomio(polinomio);
   const polinomioDerivado = derivada(polinomioParseado);
@@ -152,22 +127,19 @@ function calcularEquacaoTangenteEExibir() {
 
   $('#modalEquacaoTangente').modal('hide');
 
-  plotarGrafico(polinomioParseado, polinomioDerivado, { a: parseFloat(a), f_a: f_tangente, f_linha_a: f_linha_tangente });
-  document.getElementById('polinomio').value = '';
-  document.getElementById('valorA').value = '';
-  document.getElementById('valorTangenteA').value = '';
+  plotarGrafico(polinomioParseado, polinomioDerivado, { a: a, f_a: f_tangente, f_linha_a: f_linha_tangente });
 }
 
 // 9. Função para simplificar a equação da reta tangente
 function simplificarEquacaoTangente(inclinacao, a, intercepcao) {
   const b = intercepcao - inclinacao * a;
-  if (inclinacao == 1) {
+  if (inclinacao === 1) {
     if (b < 0) {
       return `y = x ${b}`;
     } else if (b > 0) {
       return `y = x + ${b}`;
     }
-  } else if (inclinacao == -1) {
+  } else if (inclinacao === -1) {
     if (b < 0) {
       return `y = -x ${b}`;
     } else if (b > 0) {
@@ -187,85 +159,85 @@ let chartInstance;
 
 // 10. Função para plotar o gráfico do polinômio, sua derivada e a reta tangente
 function plotarGrafico(polinomio, derivada, pontoTangente) {
-    const ctx = document.getElementById('graphCanvas').getContext('2d');
+  const ctx = document.getElementById('graphCanvas').getContext('2d');
 
-    // Verifica se já existe um gráfico e o destrói
-    if (chartInstance) {
-        chartInstance.destroy();
-    }
+  // Verifica se já existe um gráfico e o destrói
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
 
-    const pontos = Array.from({ length: 101 }, (_, i) => i - 50);
-    const valoresOriginal = pontos.map(x => calcularValorFuncional(polinomio, x));
-    const valoresDerivada = pontos.map(x => calcularValorFuncional(derivada, x));
-    let datasets = [{
-        label: 'f(x)',
-        data: valoresOriginal,
-        borderColor: 'blue',
-        borderWidth: 1,
-        fill: false
-    }, {
-        label: "f'(x)",
-        data: valoresDerivada,
-        borderColor: 'red',
-        borderWidth: 1,
-        fill: false
-    }];
+  const pontos = Array.from({ length: 101 }, (_, i) => i - 50);
+  const valoresOriginal = pontos.map(x => calcularValorFuncional(polinomio, x));
+  const valoresDerivada = pontos.map(x => calcularValorFuncional(derivada, x));
+  const valoresTangente = pontos.map(x => pontoTangente.f_linha_a * (x - pontoTangente.a) + pontoTangente.f_a);
 
-    if (pontoTangente) {
-        const { a, f_a, f_linha_a } = pontoTangente;
-        const valoresTangente = pontos.map(x => f_linha_a * (x - a) + f_a);
-        datasets.push({
-            label: 'Tangente',
-            data: valoresTangente,
-            borderColor: 'green',
-            borderWidth: 1,
-            fill: false
-        });
-    }
-
-    chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: pontos,
-            datasets: datasets
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: pontos,
+      datasets: [
+        {
+          label: 'Polinômio Original',
+          data: valoresOriginal,
+          borderColor: 'blue',
+          fill: false
         },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom'
-                }
-            }
+        {
+          label: 'Derivada',
+          data: valoresDerivada,
+          borderColor: 'green',
+          fill: false
+        },
+        {
+          label: 'Reta Tangente',
+          data: valoresTangente,
+          borderColor: 'red',
+          fill: false
         }
-    });
-}
-
-
-
-// 11. Função para atualizar o select com polinômios registrados
-function atualizarSelectPolinomios() {
-    let polinomios = document.getElementById('polinomio').value;
-    let selectPolinomios = document.getElementById('polinomiosRegistrados');
-    
-    if (selectPolinomios) {
-        // Verificar se já existe uma option com o mesmo valor
-        let optionExistente = Array.from(selectPolinomios.options).find(option => option.value === polinomios);
-        
-        if (optionExistente) {
-            console.log('Este polinômio já está registrado.');
-        } else {
-            selectPolinomios.innerHTML += `<option value="${polinomios}">${polinomios}</option>`;
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'x'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'y'
+          }
         }
-    } else {
-        console.error('Elemento selectPolinomios não encontrado.');
+      }
     }
+  });
+}
+
+// 11. Função para atualizar o campo de seleção com os polinômios registrados
+function atualizarSelectPolinomios() {
+  const selectPolinomios = document.getElementById('selectPolinomios');
+  selectPolinomios.innerHTML = '';
+  polinomiosRegistrados.forEach(polinomio => {
+    const option = document.createElement('option');
+    option.value = polinomio;
+    option.text = polinomio;
+    selectPolinomios.appendChild(option);
+  });
 }
 
 
-// 12. Função para preencher o campo de entrada com um polinômio registrado
-function selecionarPolinomioRegistrado(element) { 
-    const polinomio = element.value;
-    document.getElementById('polinomio').value = polinomio;
-    calcular();
+// 12. Função para carregar o polinômio selecionado no campo de entrada
+function carregarPolinomioSelecionado() {
+  const selectPolinomios = document.getElementById('polinomiosRegistrados');
+  const polinomioSelecionado = polinomiosRegistrados[selectPolinomios.value];
+  document.getElementById('polinomio').value = polinomioSelecionado;
 }
+
+document.getElementById('calcular').addEventListener('click', calcular);
+document.getElementById('calcularValorFuncional').addEventListener('click', calcularValorFuncionalEExibir);
+document.getElementById('calcularEquacaoTangente').addEventListener('click', calcularEquacaoTangenteEExibir);
+document.getElementById('carregarPolinomio').addEventListener('click', carregarPolinomioSelecionado);

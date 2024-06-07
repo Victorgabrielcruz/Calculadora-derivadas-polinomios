@@ -1,97 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Derivadas</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 800px;
-            margin-top: 50px;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        .resultado {
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Polinômios</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Calculadora de Derivadas</h1>
-        <form onsubmit="event.preventDefault(); calcular();">
-            <div class="form-group">
-                <label for="polinomio">Polinômio:</label>
-                <input type="text" id="polinomio" class="form-control" placeholder="Ex: 3x^3 + 2x^2 - x + 5" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Calcular</button>
-        </form>
-        <div class="form-group">
-            <label for="polinomiosRegistrados">Polinômios Registrados:</label>
-            <select id="polinomiosRegistrados" class="form-control" onchange="selecionarPolinomioRegistrado(this)">
-                <option value="">Selecione um polinômio registrado</option>
-            </select>            
+  <div class="container">
+    <h1>Calculadora de Polinômios</h1>
+    <form onsubmit="event.preventDefault(); calcular();">
+      <div class="form-group">
+        <label for="polinomio">Digite o polinômio:</label>
+        <input type="text" class="form-control" id="polinomio" placeholder="Ex: 3x^2 + 2x - 5" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Calcular</button>
+    </form>
+    <div id="output"></div>
+    
+    <!-- Adicione este select para visualizar polinômios registrados -->
+    <div class="form-group">
+      <label for="selectPolinomios">Polinômios Registrados:</label>
+      <select id="selectPolinomios" class="form-control"></select>
+    </div>
+    
+    <canvas id="graphCanvas" style="height: 400px; width: 100%;"></canvas>
+    
+    <!-- Modais para valor funcional e equação da reta tangente -->
+    <div class="modal fade" id="modalValorFuncional" tabindex="-1" role="dialog" aria-labelledby="modalValorFuncionalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalValorFuncionalLabel">Calcular Valor Funcional</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="event.preventDefault(); calcularValorFuncionalEExibir();">
+              <div class="form-group">
+                <label for="valorA">Digite o valor de x:</label>
+                <input type="number" class="form-control" id="valorA" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Calcular</button>
+            </form>
+          </div>
         </div>
-        <div id="output" class="resultado"></div>
-        <canvas id="graphCanvas" width="400" height="400"></canvas>
+      </div>
     </div>
 
-    <!-- Modal para Valor Funcional -->
-    <div class="modal fade" id="modalValorFuncional" tabindex="-1" aria-labelledby="modalValorFuncionalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalValorFuncionalLabel">Calcular Valor Funcional</h5>
-
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="valorA">Digite o valor de a:</label>
-                        <input type="number" id="valorA" class="form-control" required>
-                    </div>
-                    <button type="button" class="btn btn-danger" onclick="abrirModal()" data-dismiss="modal" aria-label="Close">
-                        Fechar
-                        </button>
-                    <button type="button" class="btn btn-primary" onclick="calcularValorFuncionalEExibir()">Calcular</button>
-                </div>
-            </div>
+    <div class="modal fade" id="modalEquacaoTangente" tabindex="-1" role="dialog" aria-labelledby="modalEquacaoTangenteLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEquacaoTangenteLabel">Calcular Equação da Reta Tangente</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="event.preventDefault(); calcularEquacaoTangenteEExibir();">
+              <div class="form-group">
+                <label for="valorTangenteA">Digite o valor de x:</label>
+                <input type="number" class="form-control" id="valorTangenteA" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Calcular</button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-
-    <!-- Modal para Equação da Tangente -->
-    <div class="modal fade" id="modalEquacaoTangente" tabindex="-1" aria-labelledby="modalEquacaoTangenteLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEquacaoTangenteLabel">Calcular Equação da Tangente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="valorTangenteA">Digite o valor de a para a tangente:</label>
-                        <input type="number" id="valorTangenteA" class="form-control" required>
-                    </div>
-                    <button type="button" class="btn btn-danger" onclick="limparinput()"  data-dismiss="modal" aria-label="Close">
-                        Fechar
-                        </button>
-                    <button type="button" class="btn btn-primary" onclick="calcularEquacaoTangenteEExibir()">Calcular</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
