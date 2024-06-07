@@ -42,6 +42,7 @@ function calculateDerivative() {
   resultHtml += `<div id="functionalValueResult"></div>`;
   resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
   document.getElementById('result').innerHTML = resultHtml;
+  atualizaSelect();
 }
 
 
@@ -91,4 +92,19 @@ function calculateTangentEquation() {
   let resultHtml = `<p>A equação da reta tangente ao gráfico de f no ponto P(${a}, ${fA}) é:</p>`;
   resultHtml += `<p>${tangentEquation}</p>`;
   document.getElementById('tangentQuestion').innerHTML = resultHtml;
+}
+
+        // Seleciona o elemento select pelo ID
+const selectElement = document.getElementById('options');
+
+selectElement.addEventListener('change', (event) => {
+  const selectedValue = event.target.value;
+  document.getElementById('polynomial').value = selectedValue;
+  document.getElementById('result').innerHTML = ``;
+});
+
+function atualizaSelect(){
+  const select = document.getElementById('options');
+  const poly = document.getElementById('polynomial').value;
+  select.innerHTML += `<option value = "${poly}">${poly}</option>`
 }
