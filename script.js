@@ -1,5 +1,5 @@
 function parsePolynomial(poly) {
-  const terms = poly.match(/([+-]?\d*\.?\d*x\^?\d*)|([+-]?\d*\.?\d*x)|([+-]?\d*\.?\d+)/g);
+  const terms = poly.match(/([+-]?\d*\.?\d*x\^?-?\d*)|([+-]?\d*\.?\d*x)|([+-]?\d*\.?\d+)/g);
   return terms.map(term => {
       let coef = 1, exp = 0;
       if (term.includes('x')) {
@@ -27,7 +27,7 @@ function calculateDerivative() {
   let derivative = parsedPoly.map(({ coef, exp }) => ({
       coef: coef * exp,
       exp: exp - 1
-  })).filter(({ coef, exp }) => coef !== 0 && exp >= 0);
+  })).filter(({ coef, exp }) => coef !== 0);
 
   const originalPoly = parsedPoly.map(formatTerm).filter(term => term).join(' + ').replace(/\+\s*-/g, '- ');
   const derivativePoly = derivative.map(formatTerm).filter(term => term).join(' + ').replace(/\+\s*-/g, '- ');
@@ -43,6 +43,7 @@ function calculateDerivative() {
   resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
   document.getElementById('result').innerHTML = resultHtml;
 }
+
 
 function calculateFunctionalValue() {
   const a = parseFloat(document.getElementById('valueA').value);
