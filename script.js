@@ -157,26 +157,29 @@ function simplificarEquacaoTangente(inclinacao, a, intercepcao) {
 }
 
 // Variável global para armazenar a referência ao gráfico
+// Variável global para armazenar a referência ao gráfico
 let chartInstance;
 
 // 10. Função para plotar o gráfico do polinômio, sua derivada e a reta tangente
 function plotarGrafico(polinomio, derivada, pontoTangente) {
   const ctx = document.getElementById('graphCanvas').getContext('2d');
-
+  
   // Verifica se já existe um gráfico e o destrói
   if (chartInstance) {
     chartInstance.destroy();
   }
 
-  const pontos = Array.from({ length: 101 }, (_, i) => i - 50);
-  const valoresOriginal = pontos.map(x => calcularValorFuncional(polinomio, x));
-  const valoresDerivada = pontos.map(x => calcularValorFuncional(derivada, x));
-  const valoresTangente = pontos.map(x => pontoTangente.f_linha_a * (x - pontoTangente.a) + pontoTangente.f_a);
+  // Calcular apenas os valores necessários para os limites do gráfico
+  //const limites = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
+  const valoresOriginal = limites.map(x => calcularValorFuncional(polinomio, x));
+  const valoresDerivada = limites.map(x => calcularValorFuncional(derivada, x));
+  const valoresTangente = limites.map(x => pontoTangente.f_linha_a * (x - pontoTangente.a) + pontoTangente.f_a);
 
+  // Criação do gráfico
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: pontos,
+      labels: limites,
       datasets: [
         {
           label: 'Polinômio Original',
@@ -199,7 +202,7 @@ function plotarGrafico(polinomio, derivada, pontoTangente) {
       ]
     },
     options: {
-      responsive: true,
+      responsive: false, // Altere para false
       maintainAspectRatio: false,
       scales: {
         x: {
@@ -218,6 +221,7 @@ function plotarGrafico(polinomio, derivada, pontoTangente) {
     }
   });
 }
+
 
 // 11. Função para atualizar o campo de seleção com os polinômios registrados
 function atualizarSelectPolinomios() {
