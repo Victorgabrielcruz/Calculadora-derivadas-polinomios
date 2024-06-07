@@ -17,11 +17,12 @@
             <label for="polynomial">Digite a função polinomial em x:</label>
             <input type="text" class="form-control" id="polynomial" placeholder="Ex: 3x^3 + 2x^2 + x + 5">
         </div>
-        <button class="btn btn-primary" onclick="calculateDerivative()">Calcular Derivada</button>
+        <button class="btn btn-primary" onclick="calculateDerivative() ">Calcular Derivada</button>
         <div id="result" class="mt-4"></div>
+        <canvas id="chartCanvas" width="400" height="400"></canvas>
 
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

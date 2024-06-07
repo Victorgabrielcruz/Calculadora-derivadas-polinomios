@@ -43,6 +43,7 @@ function calculateDerivative() {
   resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
   document.getElementById('result').innerHTML = resultHtml;
   atualizaSelect();
+  clearGraph();
 }
 
 
@@ -71,6 +72,8 @@ function calculateFunctionalValue() {
                       <button class="btn btn-primary mt-2" onclick="calculateTangentEquation()">Calcular Equação da Reta Tangente</button>
                  </div>`;
   document.getElementById('functionalValueResult').innerHTML = resultHtml;
+  plotGraph(parsedPoly, derivative);
+
 }
 
 function calculateTangentEquation() {
@@ -92,6 +95,8 @@ function calculateTangentEquation() {
   let resultHtml = `<p>A equação da reta tangente ao gráfico de f no ponto P(${a}, ${fA}) é:</p>`;
   resultHtml += `<p>${tangentEquation}</p>`;
   document.getElementById('tangentQuestion').innerHTML = resultHtml;
+  plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA);
+
 }
 
         // Seleciona o elemento select pelo ID
@@ -107,4 +112,105 @@ function atualizaSelect(){
   const select = document.getElementById('options');
   const poly = document.getElementById('polynomial').value;
   select.innerHTML += `<option value = "${poly}">${poly}</option>`
+}
+function plotGraph(parsedPoly, derivative) {
+  const ctx = document.getElementById('chartCanvas').getContext('2d');
+  const labels = Array.from({ length: 101 }, (_, i) => i - 50);
+
+  const polyFunc = x => parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+  const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+
+  const polyData = labels.map(x => polyFunc(x));
+  const derivativeData = labels.map(x => derivativeFunc(x));
+
+  if (window.myChart) {
+      window.myChart.destroy();
+  }
+
+  window.myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: labels,
+          datasets: [
+              {
+                  label: 'Função Original',
+                  data: polyData,
+                  borderColor: 'blue',
+                  fill: false
+              },
+              {
+                  label: 'Derivada',
+                  data: derivativeData,
+                  borderColor: 'red',
+                  fill: false
+              }
+          ]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              x: {
+                  type: 'linear',
+                  position: 'bottom'
+              }
+          }
+      }
+  });
+}
+function plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA) {
+  const ctx = document.getElementById('chartCanvas').getContext('2d');
+  const labels = Array.from({ length: 101 }, (_, i) => i - 50);
+
+  const polyFunc = x => parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+  const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+  const tangentFunc = x => fPrimeA * x + (fA - fPrimeA * a);
+
+  const polyData = labels.map(x => polyFunc(x));
+  const derivativeData = labels.map(x => derivativeFunc(x));
+  const tangentData = labels.map(x => tangentFunc(x));
+
+  if (window.myChart) {
+      window.myChart.destroy();
+  }
+
+  window.myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: labels,
+          datasets: [
+              {
+                  label: 'Função Original',
+                  data: polyData,
+                  borderColor: 'blue',
+                  fill: false
+              },
+              {
+                  label: 'Derivada',
+                  data: derivativeData,
+                  borderColor: 'red',
+                  fill: false
+              },
+              {
+                  label: 'Reta Tangente',
+                  data: tangentData,
+                  borderColor: 'green',
+                  fill: false
+              }
+          ]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              x: {
+                  type: 'linear',
+                  position: 'bottom'
+              }
+          }
+      }
+  });
+}
+function clearGraph() {
+  if (window.myChart) {
+      window.myChart.destroy(); // Destroi o gráfico atual se existir
+  }
 }
