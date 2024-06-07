@@ -78,6 +78,8 @@ function calcular() {
   `;
   polinomiosRegistrados.push(polinomio);
   atualizarSelectPolinomios();
+  $('#modalValorFuncional').modal('show'); // Usando jQuery
+
 }
 
 // 7. Função para calcular e exibir o valor funcional e a derivada em um ponto
