@@ -99,13 +99,13 @@ function calculateTangentEquation() {
 
 }
 
-        // Seleciona o elemento select pelo ID
 const selectElement = document.getElementById('options');
 
 selectElement.addEventListener('change', (event) => {
   const selectedValue = event.target.value;
   document.getElementById('polynomial').value = selectedValue;
   document.getElementById('result').innerHTML = ``;
+  clearGraph();
 });
 
 function atualizaSelect(){
