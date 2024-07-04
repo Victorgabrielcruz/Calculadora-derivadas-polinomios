@@ -89,13 +89,20 @@ function calculateTangentEquation() {
 
     const fPrimeA = derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(a, exp), 0);
 
-    const tangentEquation = `y = ${fPrimeA}x + (${fA - fPrimeA * a})`;
+    const yIntercept = fA - fPrimeA * a;
+
+    // Formatação da equação da tangente sem parênteses desnecessários
+    let tangentEquation = `y = ${fPrimeA}x`;
+    if (yIntercept !== 0) {
+        tangentEquation += ` ${yIntercept < 0 ? '-' : '+'} ${Math.abs(yIntercept)}`;
+    }
 
     let resultHtml = `<p>A equação da reta tangente ao gráfico de f no ponto P(${a}, ${fA}) é:</p>`;
     resultHtml += `<p>${tangentEquation}</p>`;
     document.getElementById('tangentQuestion').innerHTML = resultHtml;
     plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA);
 }
+
 
 const selectElement = document.getElementById('options');
 
