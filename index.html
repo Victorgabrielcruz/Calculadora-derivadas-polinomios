@@ -3,27 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Derivadas e Raízes</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <title>Calculadora de Derivadas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Calculadora de Derivadas e Raízes</h1>
-        <select id="options">
-            <option value="null">Polinômios anteriores</option>
-        </select>
+        <h1 class="text-center">Calculadora de Derivadas</h1>
         <div class="form-group">
-            <label for="polynomial">Digite a função polinomial em x:</label>
-            <input type="text" class="form-control" id="polynomial" placeholder="Ex: 3x^3 + 2x^2 + x + 5">
+            <label for="polynomial">Insira o polinômio (ex: 2x^3 - 5x^2 + 3x - 7):</label>
+            <input type="text" id="polynomial" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="options">Selecione um polinômio pré-definido:</label>
+            <select id="options" class="form-control">
+                <option value="2x^3 - 5x^2 + 3x - 7">2x^3 - 5x^2 + 3x - 7</option>
+                <option value="x^4 - 4x^3 + 2x^2 + 5x - 6">x^4 - 4x^3 + 2x^2 + 5x - 6</option>
+                <option value="3x^2 + 6x + 2">3x^2 + 6x + 2</option>
+            </select>
         </div>
         <button class="btn btn-primary" onclick="calculateDerivative()">Calcular Derivada</button>
         <div id="result" class="mt-4"></div>
         <div id="rootResult" class="mt-4"></div>
-        <canvas id="chartCanvas" width="400" height="400"></canvas>
-        <div id="rootResult" class="mt-4"></div>
+
+        <h2 class="text-center mt-4">Calculadora de Raiz Enésima</h2>
+        <div class="form-group">
+            <label for="inputN">Insira o valor de n:</label>
+            <input type="number" id="inputN" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="inputK">Insira o valor de k:</label>
+            <input type="number" id="inputK" class="form-control">
+        </div>
+        <button class="btn btn-primary" onclick="calcularRaiz()">Calcular Raiz Enésima</button>
+        <div id="nthRootResult" class="mt-4"></div>
+
+        <canvas id="chartCanvas" width="400" height="200"></canvas>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
+

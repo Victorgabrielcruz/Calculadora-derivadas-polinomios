@@ -1,3 +1,4 @@
+// Função para analisar o polinômio a partir de uma string
 function parsePolynomial(poly) {
     const terms = poly.match(/([+-]?\d*\.?\d*x\^?-?\d*)|([+-]?\d*\.?\d*x)|([+-]?\d*\.?\d+)/g);
     return terms.map(term => {
@@ -13,6 +14,21 @@ function parsePolynomial(poly) {
     });
 }
 
+function calcularRaiz() {
+    const n = parseFloat(document.getElementById('inputN').value);
+    const k = parseFloat(document.getElementById('inputK').value);
+
+    if (isNaN(n) || isNaN(k)) {
+        document.getElementById('nthRootResult').innerHTML = '<p>Por favor, insira valores válidos para n e k.</p>';
+        return;
+    }
+
+    const root = Math.pow(k, 1 / n);
+
+    document.getElementById('nthRootResult').innerHTML = `<p>A raiz ${n}-ésima de ${k} é ${root}.</p>`;
+}
+
+// Função para formatar termos do polinômio
 function formatTerm({ coef, exp }) {
     if (coef === 0) return '';
     if (exp === 0) return `${coef}`;
@@ -20,6 +36,7 @@ function formatTerm({ coef, exp }) {
     return `${coef === 1 ? '' : (coef === -1 ? '-' : coef)}x^${exp}`;
 }
 
+// Função para calcular a derivada do polinômio
 function calculateDerivative() {
     const poly = document.getElementById('polynomial').value;
     const parsedPoly = parsePolynomial(poly);
@@ -47,6 +64,7 @@ function calculateDerivative() {
     clearGraph();
 }
 
+// Função para calcular o valor funcional de f(a)
 function calculateFunctionalValue() {
     const a = parseFloat(document.getElementById('valueA').value);
     const poly = document.getElementById('polynomial').value;
@@ -75,6 +93,7 @@ function calculateFunctionalValue() {
     plotGraph(parsedPoly, derivative);
 }
 
+// Função para calcular a equação da reta tangente ao gráfico
 function calculateTangentEquation() {
     const a = parseFloat(document.getElementById('tangentA').value);
     const poly = document.getElementById('polynomial').value;
@@ -91,7 +110,6 @@ function calculateTangentEquation() {
 
     const yIntercept = fA - fPrimeA * a;
 
-    // Formatação da equação da tangente sem parênteses desnecessários
     let tangentEquation = `y = ${fPrimeA}x`;
     if (yIntercept !== 0) {
         tangentEquation += ` ${yIntercept < 0 ? '-' : '+'} ${Math.abs(yIntercept)}`;
@@ -103,22 +121,21 @@ function calculateTangentEquation() {
     plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA);
 }
 
-
-const selectElement = document.getElementById('options');
-
-selectElement.addEventListener('change', (event) => {
-    const selectedValue = event.target.value;
-    document.getElementById('polynomial').value = selectedValue;
-    document.getElementById('result').innerHTML = ``;
-    clearGraph();
-});
-
+// Função para atualizar o select com o polinômio atual
 function atualizaSelect() {
     const select = document.getElementById('options');
     const poly = document.getElementById('polynomial').value;
     select.innerHTML += `<option value="${poly}">${poly}</option>`;
 }
 
+// Função para limpar o gráfico
+function clearGraph() {
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+}
+
+// Função para plotar o gráfico do polinômio, derivada e reta tangente
 function plotGraph(parsedPoly, derivative) {
     const ctx = document.getElementById('chartCanvas').getContext('2d');
     const labels = Array.from({ length: 101 }, (_, i) => i - 50);
@@ -164,6 +181,7 @@ function plotGraph(parsedPoly, derivative) {
     });
 }
 
+// Função para plotar o gráfico com a reta tangente
 function plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA) {
     const ctx = document.getElementById('chartCanvas').getContext('2d');
     const labels = Array.from({ length: 101 }, (_, i) => i - 50);
@@ -217,12 +235,7 @@ function plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA) {
     });
 }
 
-function clearGraph() {
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
-}
-
+// Função para encontrar intervalos onde as raízes podem estar localizadas
 function findRoots(parsedPoly) {
     const roots = [];
     for (let i = -100; i < 100; i += 1) {
@@ -237,6 +250,7 @@ function findRoots(parsedPoly) {
     return roots;
 }
 
+// Função do método de Newton-Raphson para encontrar raízes precisas
 function newtonRaphson(parsedPoly, derivative, interval, tolerance = 1e-8, maxIter = 1000) {
     const [x1, x2] = [interval.x1, interval.x2];
     let x0 = (x1 + x2) / 2;
@@ -256,6 +270,7 @@ function newtonRaphson(parsedPoly, derivative, interval, tolerance = 1e-8, maxIt
     return Math.abs(fx) <= tolerance ? x0 : null;
 }
 
+// Função para calcular as raízes do polinômio
 function calculateRoots() {
     const poly = document.getElementById('polynomial').value;
     const parsedPoly = parsePolynomial(poly);
@@ -272,8 +287,10 @@ function calculateRoots() {
     resultHtml += `<p>Fase 2: as raízes do polinômio fornecido no intervalo [-10, 10] são: ${roots.join(', ')}</p>`;
 
     document.getElementById('rootResult').innerHTML = resultHtml;
+    plotGraphWithRoots(parsedPoly, derivative, roots);
 }
 
+// Função para plotar o gráfico com as raízes do polinômio
 function plotGraphWithRoots(parsedPoly, derivative, roots) {
     const ctx = document.getElementById('chartCanvas').getContext('2d');
     const labels = Array.from({ length: 201 }, (_, i) => i / 10 - 10);
@@ -326,3 +343,12 @@ function plotGraphWithRoots(parsedPoly, derivative, roots) {
         }
     });
 }
+
+// Evento para atualizar o polinômio selecionado
+const selectElement = document.getElementById('options');
+selectElement.addEventListener('change', (event) => {
+    const selectedValue = event.target.value;
+    document.getElementById('polynomial').value = selectedValue;
+    document.getElementById('result').innerHTML = ``;
+    clearGraph();
+});
