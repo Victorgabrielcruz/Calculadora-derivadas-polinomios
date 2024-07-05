@@ -38,30 +38,32 @@ function formatTerm({ coef, exp }) {
 
 // Função para calcular a derivada do polinômio
 function calculateDerivative() {
-    const poly = document.getElementById('polynomial').value;
+    const poly = document.getElementById("polynomial").value;
     const parsedPoly = parsePolynomial(poly);
-
-    let derivative = parsedPoly.map(({ coef, exp }) => ({
-        coef: coef * exp,
-        exp: exp - 1
-    })).filter(({ coef, exp }) => coef !== 0);
-
-    const originalPoly = parsedPoly.map(formatTerm).filter(term => term).join(' + ').replace(/\+\s*-/g, '- ');
-    const derivativePoly = derivative.map(formatTerm).filter(term => term).join(' + ').replace(/\+\s*-/g, '- ');
-
-    let resultHtml = `<p>f(x) = ${originalPoly}</p>`;
-    resultHtml += `<p>f'(x) = ${derivativePoly}</p>`;
-    resultHtml += `<div>
-                      <label for="valueA">Deseja calcular valor funcional? Se sim, qual o valor de a?</label>
-                      <input type="number" id="valueA" class="form-control">
-                      <button class="btn btn-primary mt-2" onclick="calculateFunctionalValue()">Calcular f(a)</button>
-                   </div>`;
-    resultHtml += `<div id="functionalValueResult"></div>`;
-    resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
-    resultHtml += `<button class="btn btn-primary mt-4" onclick="calculateRoots()">Calcular Raízes</button>`;
-    document.getElementById('result').innerHTML = resultHtml;
-    atualizaSelect();
-    clearGraph();
+  
+    // Verificação se a função é constante
+    const isConstant = parsedPoly.every((term) => term.exp === 0);
+    if (isConstant) {
+      const originalPoly = parsedPoly
+        .map(formatTerm)
+        .join(" + ")
+        .replace(/\+\s*-/g, "- ");
+      document.getElementById(
+        "result"
+      ).innerHTML = `
+      <p>f(x) = ${originalPoly}</p><p>f'(x) = 0</p>
+      <div>
+          <label for="valueA">Deseja calcular valor funcional? Se sim, qual o valor de a?</label>
+          <input type="number" id="valueA" class="form-control">
+          <button class="btn btn-primary mt-2" onclick="calculateFunctionalValue()">Calcular f(a)</button>
+      </div>
+      <div id="functionalValueResult"></div>
+      <div id="tangentQuestion" class="mt-4"></div>
+      `;
+      atualizaSelect();
+      clearGraph();
+      return;
+    }
 }
 
 // Função para calcular o valor funcional de f(a)
