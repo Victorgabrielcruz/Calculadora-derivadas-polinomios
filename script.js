@@ -64,7 +64,38 @@ function calculateDerivative() {
       clearGraph();
       return;
     }
-}
+  
+    let derivative = parsedPoly
+      .map(({ coef, exp }) => ({
+        coef: coef * exp,
+        exp: exp - 1,
+      }))
+      .filter(({ coef, exp }) => coef !== 0);
+  
+    const originalPoly = parsedPoly
+      .map(formatTerm)
+      .filter((term) => term)
+      .join(" + ")
+      .replace(/\+\s*-/g, "- ");
+    const derivativePoly = derivative
+      .map(formatTerm)
+      .filter((term) => term)
+      .join(" + ")
+      .replace(/\+\s*-/g, "- ");
+  
+    let resultHtml = `<p>f(x) = ${originalPoly}</p>`;
+    resultHtml += `<p>f'(x) = ${derivativePoly}</p>`;
+    resultHtml += `<div>
+                          <label for="valueA">Deseja calcular valor funcional? Se sim, qual o valor de a?</label>
+                          <input type="number" id="valueA" class="form-control">
+                          <button class="btn btn-primary mt-2" onclick="calculateFunctionalValue()">Calcular f(a)</button>
+                      </div>`;
+    resultHtml += `<div id="functionalValueResult"></div>`;
+    resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
+    document.getElementById("result").innerHTML = resultHtml;
+    atualizaSelect();
+    clearGraph();
+  }
 
 // Função para calcular o valor funcional de f(a)
 function calculateFunctionalValue() {
