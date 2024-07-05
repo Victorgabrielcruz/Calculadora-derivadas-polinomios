@@ -24,9 +24,43 @@ function calcularRaiz() {
     }
 
     const root = Math.pow(k, 1 / n);
-
-    document.getElementById('nthRootResult').innerHTML = `<p>A raiz ${n}-ésima de ${k} é ${root}.</p>`;
+    console.log(n);
+    switch(n) {
+        case 1:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz primeira de ${k} é ${root}.</p>`;
+            break;
+        case 2:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz quadrada de ${k} é ${root}.</p>`;
+            break;
+        case 3:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz cubica de ${k} é ${root}.</p>`;
+            break;
+        case 4:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz quarta de ${k} é ${root}.</p>`;
+            break;
+        case 5:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz quinta de ${k} é ${root}.</p>`;
+            break;
+        case 6:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz sexta de ${k} é ${root}.</p>`;
+            break;
+        case 7:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz setima de ${k} é ${root}.</p>`;
+            break;
+        case 8:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz oitava de ${k} é ${root}.</p>`;
+            break;
+        case 9:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz nona de ${k} é ${root}.</p>`;
+            break;
+        case 10:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz decima de ${k} é ${root}.</p>`;
+            break;
+        default:
+            document.getElementById('nthRootResult').innerHTML = `<p>A raiz ${n}-ésima de ${k} é ${root}.</p>`;
+    }
 }
+
 
 // Função para formatar termos do polinômio
 function formatTerm({ coef, exp }) {
@@ -171,106 +205,117 @@ function clearGraph() {
     }
 }
 
-// Função para plotar o gráfico do polinômio, derivada e reta tangente
 function plotGraph(parsedPoly, derivative) {
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
+    const ctx = document.getElementById("chartCanvas").getContext("2d");
     const labels = Array.from({ length: 101 }, (_, i) => i - 50);
 
-    const polyFunc = x => parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
-    const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+    const polyFunc = (x) =>
+        parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+    const derivativeFunc = (x) =>
+        derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
 
-    const polyData = labels.map(x => polyFunc(x));
-    const derivativeData = labels.map(x => derivativeFunc(x));
+    const polyData = labels.map((x) => polyFunc(x));
+    const derivativeData = labels.map((x) => derivativeFunc(x));
 
     if (window.myChart) {
         window.myChart.destroy();
     }
 
     window.myChart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: 'Função Original',
+                    label: "Função Original",
                     data: polyData,
-                    borderColor: 'blue',
-                    fill: false
+                    borderColor: "blue",
+                    fill: false,
                 },
                 {
-                    label: 'Derivada',
+                    label: "Derivada",
                     data: derivativeData,
-                    borderColor: 'red',
-                    fill: false
-                }
-            ]
+                    borderColor: "red",
+                    fill: false,
+                },
+            ],
         },
         options: {
             responsive: true,
             scales: {
                 x: {
-                    type: 'linear',
-                    position: 'bottom'
-                }
-            }
-        }
+                    type: "linear",
+                    position: "bottom",
+                },
+                y: {
+                    min: -100,
+                    max: 100,
+                },
+            },
+        },
     });
 }
+
 
 // Função para plotar o gráfico com a reta tangente
 function plotGraphWithTangent(parsedPoly, derivative, fPrimeA, a, fA) {
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
+    const ctx = document.getElementById("chartCanvas").getContext("2d");
     const labels = Array.from({ length: 101 }, (_, i) => i - 50);
 
-    const polyFunc = x => parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
-    const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
-    const tangentFunc = x => fPrimeA * x + (fA - fPrimeA * a);
+    const polyFunc = (x) =>
+        parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+    const derivativeFunc = (x) =>
+        derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+    const tangentFunc = (x) => fPrimeA * x + (fA - fPrimeA * a);
 
-    const polyData = labels.map(x => polyFunc(x));
-    const derivativeData = labels.map(x => derivativeFunc(x));
-    const tangentData = labels.map(x => tangentFunc(x));
+    const polyData = labels.map((x) => polyFunc(x));
+    const derivativeData = labels.map((x) => derivativeFunc(x));
+    const tangentData = labels.map((x) => tangentFunc(x));
 
     if (window.myChart) {
         window.myChart.destroy();
     }
 
     window.myChart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: 'Função Original',
+                    label: "Função Original",
                     data: polyData,
-                    borderColor: 'blue',
-                    fill: false
+                    borderColor: "blue",
+                    fill: false,
                 },
                 {
-                    label: 'Derivada',
+                    label: "Derivada",
                     data: derivativeData,
-                    borderColor: 'red',
-                    fill: false
+                    borderColor: "red",
+                    fill: false,
                 },
                 {
-                    label: 'Reta Tangente',
+                    label: "Reta Tangente",
                     data: tangentData,
-                    borderColor: 'green',
-                    fill: false
-                }
-            ]
+                    borderColor: "green",
+                    fill: false,
+                },
+            ],
         },
         options: {
             responsive: true,
             scales: {
                 x: {
-                    type: 'linear',
-                    position: 'bottom'
-                }
-            }
-        }
+                    type: "linear",
+                    position: "bottom",
+                },
+                y: {
+                    min: -100,
+                    max: 100,
+                },
+            },
+        },
     });
 }
-
 // Função para encontrar intervalos onde as raízes podem estar localizadas
 function findRoots(parsedPoly) {
     const roots = [];
@@ -323,26 +368,34 @@ function calculateRoots() {
     resultHtml += `<p>Fase 2: as raízes do polinômio fornecido no intervalo [-10, 10] são: ${roots.join(', ')}</p>`;
 
     document.getElementById('rootResult').innerHTML = resultHtml;
-    plotGraphWithRoots(parsedPoly, derivative, roots);
+    let canvasId = "chartCanvas_Raizes";
+    plotGraphWithRoots(canvasId, parsedPoly, roots, derivative);    
 }
 
 // Função para plotar o gráfico com as raízes do polinômio
-function plotGraphWithRoots(parsedPoly, derivative, roots) {
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
-    const labels = Array.from({ length: 201 }, (_, i) => i / 10 - 10);
-
-    const polyFunc = x => parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
-    const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
-
-    const polyData = labels.map(x => polyFunc(x));
-    const derivativeData = labels.map(x => derivativeFunc(x));
-    const rootData = roots.map(root => ({ x: root, y: polyFunc(root) }));
-
-    if (window.myChart) {
-        window.myChart.destroy();
+function plotGraphWithRoots(canvasId, parsedPoly, roots, derivative) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        console.error(`Elemento canvas com ID ${canvasId} não encontrado.`);
+        return;
     }
 
-    window.myChart = new Chart(ctx, {
+    const ctx = canvas.getContext('2d');
+    const labels = Array.from({ length: 101 }, (_, i) => i - 50);
+    const derivativeFunc = x => derivative.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+
+    const polyFunc = (x) =>
+        parsedPoly.reduce((acc, { coef, exp }) => acc + coef * Math.pow(x, exp), 0);
+    const derivativeData = labels.map(x => derivativeFunc(x));
+    const polyData = labels.map((x) => polyFunc(x));
+    const rootData = roots.map((root) => ({ x: root, y: 0 }));
+
+    // Destruir o gráfico existente se houver
+    if (canvas.myChart) {
+        canvas.myChart.destroy();
+    }
+
+    canvas.myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -351,32 +404,38 @@ function plotGraphWithRoots(parsedPoly, derivative, roots) {
                     label: 'Função Original',
                     data: polyData,
                     borderColor: 'blue',
-                    fill: false
+                    fill: false,
                 },
                 {
-                    label: 'Derivada',
-                    data: derivativeData,
-                    borderColor: 'red',
-                    fill: false
-                },
-                {
-                    type: 'scatter',
                     label: 'Raízes',
                     data: rootData,
                     borderColor: 'green',
-                    backgroundColor: 'green'
-                }
-            ]
+                    fill: false,
+                    showLine: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: 'red',
+                },
+                {
+                    label: "Derivada",
+                    data: derivativeData,
+                    borderColor: "purple",
+                    fill: false,
+                },
+            ],
         },
         options: {
             responsive: true,
             scales: {
                 x: {
                     type: 'linear',
-                    position: 'bottom'
-                }
-            }
-        }
+                    position: 'bottom',
+                },
+                y: {
+                    min: -100,
+                    max: 100,
+                },
+            },
+        },
     });
 }
 
