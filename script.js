@@ -1,4 +1,3 @@
-
 // Função para analisar o polinômio a partir de uma string
 function parsePolynomial(poly) {
     const terms = poly.match(/([+-]?\d*\.?\d*x\^?-?\d*)|([+-]?\d*\.?\d*x)|([+-]?\d*\.?\d+)/g);
