@@ -59,6 +59,8 @@ function calculateDerivative() {
       </div>
       <div id="functionalValueResult"></div>
       <div id="tangentQuestion" class="mt-4"></div>
+    <button class="btn btn-primary mt-4" onclick="calculateRoots()">Calcular Raízes</button>;
+
       `;
       atualizaSelect();
       clearGraph();
@@ -92,6 +94,7 @@ function calculateDerivative() {
                       </div>`;
     resultHtml += `<div id="functionalValueResult"></div>`;
     resultHtml += `<div id="tangentQuestion" class="mt-4"></div>`;
+    resultHtml += `<button class="btn btn-primary mt-4" onclick="calculateRoots()">Calcular Raízes</button>`;
     document.getElementById("result").innerHTML = resultHtml;
     atualizaSelect();
     clearGraph();
